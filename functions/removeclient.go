@@ -1,10 +1,9 @@
 package netino
 
-
-
-func Removeclients(s *Server, c *Client,msg string) {
+func Removeclients(s *Server, c *Client) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	delete(s.clients, c.name)
-	s.history= append(s.history, msg)
+	
+		delete(s.clients, c.name)
+	
 }
