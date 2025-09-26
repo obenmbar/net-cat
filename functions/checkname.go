@@ -2,7 +2,7 @@ package netino
 
 import "strings"
 
-func Check(name string) bool {
+func Checkname(name string) bool {
 	isvalide := true
 	if name == "" || strings.TrimSpace(name) == "" || strings.Trim(name, "\t") == "" || len(name) > 30 {
 		isvalide = false
