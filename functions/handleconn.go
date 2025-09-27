@@ -32,12 +32,14 @@ var GlobalServer = &Server{
 }
 
 var (
-	Time         = Timeino()
-	Numbertotale *int
-	num          int = 0
-	line         string
+	Time        = Timeino()
+	MaxClients  *int
+	clientCount int = 0
+	namee       string
 )
 
+// Add Handleconn function to manage client connections
+// Implement name validation, history sending, and broadcasting
 func Handleconn(con net.Conn) {
 	defer con.Close()
 	con.Write([]byte(Cyan + "Welcome to TCP-Chat!\n" + Reset))
@@ -46,45 +48,40 @@ func Handleconn(con net.Conn) {
 
 	scanner := bufio.NewScanner(con)
 	var client *Client
+	MaxClients = &clientCount
 
-	Numbertotale = &num
-	// الخطوة الأولى: نسجل الاسم
 	for scanner.Scan() {
-		line = scanner.Text()
+		namee = scanner.Text()
 
-		if !Checkname(line) {
+		if !Checkname(namee) {
 			con.Write([]byte(Red + "[ENTER YOUR NAME]\n" + Reset))
 			continue
 		}
-		if !Checknamedansmap(line, GlobalServer) {
+		if !Checknamedansmap(namee, GlobalServer) {
 			con.Write([]byte(Red + "ENTER ANOTHER NAME \n" + Reset))
 			continue
 		}
 
-		
-		if num < 2 {
-			client = &Client{cone: con, name: line}
+		if clientCount < 10 {
+			client = &Client{cone: con, name: namee}
 			Sendhistory(GlobalServer, client)
-			Addclients(GlobalServer, client, line, Numbertotale)
-			Broadcast(GlobalServer, fmt.Sprintf(Green+"%s has joined the chat...\n", line)+Reset, line)
+			Addclients(GlobalServer, client, MaxClients)
+			Broadcast(GlobalServer, fmt.Sprintf(Green+"%s has joined the chat...\n", namee)+Reset, namee)
 
 		} else {
 			con.Write([]byte(Red + "Server full. Max connections" + Reset))
 			con.Close()
-
 		}
-fmt.Println(num)
+
 		break
 	}
 
-	// الخطوة الثانية: المساجات ديالو
-
 	for scanner.Scan() {
-		line := scanner.Text()
-		if ChecMessege(line) {
-			Broadcast(GlobalServer, fmt.Sprintf("[%s][%s]:%s\n", Time, client.name, line), client.name)
+		messege := scanner.Text()
+		if ChecMessege(messege) {
+			Broadcast(GlobalServer, fmt.Sprintf("[%s][%s]:%s\n", Time, client.name, messege), client.name)
 		} else {
-			con.Write([]byte(Red+ "your are write an imprimptable cracter\n" + Reset))
+			con.Write([]byte(Red + "your are write an imprimptable cracter\n" + Reset))
 			con.Write([]byte(fmt.Sprintf("[%s][%s]:", time.Now().Format("2006-01-02 15:04:05"), client.name)))
 		}
 
@@ -93,7 +90,7 @@ fmt.Println(num)
 	if err := scanner.Err(); err != nil {
 		fmt.Println(Red+"erreur in scanner,"+Reset, err)
 		if client != nil {
-			Removeclients(GlobalServer, client, Numbertotale)
+			Removeclients(GlobalServer, client, MaxClients)
 			Broadcast(GlobalServer, Yellow+fmt.Sprintf("%s has left the chat... \n", client.name)+Reset, client.name)
 		} else {
 			fmt.Println("client deconnect before joining")
@@ -102,7 +99,7 @@ fmt.Println(num)
 	} else {
 		if client != nil {
 			fmt.Println("client deconnect after joining")
-			Removeclients(GlobalServer, client, Numbertotale)
+			Removeclients(GlobalServer, client, MaxClients)
 			Broadcast(GlobalServer, Yellow+fmt.Sprintf("%s has left the chat... \n", client.name)+Reset, client.name)
 		} else {
 			fmt.Println("client deconnect before joining")

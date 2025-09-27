@@ -1,10 +1,9 @@
 package netino
 
-
-
-func Addclients(s *Server, c *Client, msg string, Numbertotale *int) {
+// Add Addclients function to register new clients and update total count
+func Addclients(s *Server, c *Client, totalClients *int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.clients[c.name] = c
-	*Numbertotale= *Numbertotale+1
+	*totalClients = *totalClients + 1
 }

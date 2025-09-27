@@ -2,6 +2,7 @@ package netino
 
 import "strings"
 
+// Add Checkname function to validate client name format and length
 func Checkname(name string) bool {
 	isvalide := true
 	if name == "" || strings.TrimSpace(name) == "" || strings.Trim(name, "\t") == "" || len(name) > 30 {
@@ -13,6 +14,6 @@ func Checkname(name string) bool {
 			break
 		}
 	}
-	
+
 	return isvalide
 }

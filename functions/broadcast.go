@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+// Add Broadcast function to send messages to all connected clients
+// Maintain chat history by appending each broadcasted message
 func Broadcast(s *Server, msg string, name string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
