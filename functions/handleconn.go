@@ -61,8 +61,9 @@ func Handleconn(con net.Conn) {
 			continue
 		}
 
-		client = &Client{cone: con, name: line}
-		if num < 3 {
+		
+		if num < 2 {
+			client = &Client{cone: con, name: line}
 			Sendhistory(GlobalServer, client)
 			Addclients(GlobalServer, client, line, Numbertotale)
 			Broadcast(GlobalServer, fmt.Sprintf(Green+"%s has joined the chat...\n", line)+Reset, line)
@@ -70,6 +71,7 @@ func Handleconn(con net.Conn) {
 		} else {
 			con.Write([]byte(Red + "Server full. Max connections" + Reset))
 			con.Close()
+
 		}
 fmt.Println(num)
 		break
@@ -101,7 +103,7 @@ fmt.Println(num)
 		if client != nil {
 			fmt.Println("client deconnect after joining")
 			Removeclients(GlobalServer, client, Numbertotale)
-			Broadcast(GlobalServer, fmt.Sprintf("%s has left the chat... \n", client.name), client.name)
+			Broadcast(GlobalServer, Yellow+fmt.Sprintf("%s has left the chat... \n", client.name)+Reset, client.name)
 		} else {
 			fmt.Println("client deconnect before joining")
 		}
