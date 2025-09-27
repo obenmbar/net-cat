@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"strings"
 	"sync"
 	"time"
 )
@@ -78,7 +79,7 @@ func Handleconn(con net.Conn) {
 
 	for scanner.Scan() {
 		messege := scanner.Text()
-		if ChecMessege(messege) {
+		if ChecMessege(messege) && strings.TrimSpace(messege)!= ""{
 			Broadcast(GlobalServer, fmt.Sprintf("[%s][%s]:%s\n", Time, client.name, messege), client.name)
 		} else {
 			con.Write([]byte(Red + "your are write an imprimptable cracter\n" + Reset))
